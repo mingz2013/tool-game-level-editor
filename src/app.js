@@ -1,3 +1,5 @@
+let data = {};
+
 let onImgClick = (event) => {
     // console.log(event);
 
@@ -16,6 +18,7 @@ let onImgClick = (event) => {
     target.title = i;
     target.src = "img/" + i + ".png";
 
+    updateData();
 
 };
 
@@ -67,7 +70,15 @@ let funDownload = (content, filename) => {
 
 let saveFile = () => {
 
-    let data = [];
+
+    funDownload(JSON.stringify(data), "data.json");
+
+
+};
+
+
+let updateData = () => {
+    let levelData = [];
 
     for (let col = 0; col < 10; col++) {
         for (let row = 0; row < 10; row++) {
@@ -75,13 +86,12 @@ let saveFile = () => {
             let i = document.getElementById(num);
             let title = i.title;
 
-            data[col * 10 + row] = title;
+            levelData[col * 10 + row] = title;
         }
     }
 
-
-    funDownload('[' + data + ']', "data.json");
-
+    let level = getLevel();
+    data[level] = levelData;
 
 };
 
@@ -106,15 +116,92 @@ let initBlocks = () => {
 };
 
 
-window.onload = () => {
+let showLevel = (level) => {
+    let levelData = data[level];
+    if (!levelData) {
+        levelData = [];
 
+        for (let col = 0; col < 10; col++) {
+            for (let row = 0; row < 10; row++) {
+                let num = col * 10 + row;
+                levelData[num] = 0;
+            }
+        }
+
+        data[level] = levelData;
+    }
+
+    console.log(levelData);
+
+    for (let col = 0; col < 10; col++) {
+        for (let row = 0; row < 10; row++) {
+            let num = col * 10 + row;
+            let d = levelData[num];
+            let target = document.getElementById(num);
+
+            target.title = d;
+            target.src = "img/" + d + ".png";
+        }
+    }
+
+
+};
+
+
+let onShowClick = () => {
+    let level = getLevel();
+    showLevel(level);
+};
+
+
+let getLevel = () => {
+    return document.getElementById('level').value;
+};
+
+let setLevel = (level) => {
+    document.getElementById('level').value = level;
+};
+
+
+// let onLoadFileClick = ()=>{
+//
+// };
+
+
+let onFileChange = () => {
+
+    let selectFiles = document.getElementById("selectFiles").files;
+
+    let selectFile = selectFiles[0];
+
+    let reader = new FileReader();
+
+    reader.onloadend = function () {
+        console.log(this.result);
+        data = JSON.parse(this.result);
+        showLevel(getLevel());
+    };
+
+
+    reader.readAsText(selectFile);
+
+
+};
+
+window.onload = () => {
+    setLevel(0);
 
     initBoard();
-
+    showLevel(1);
 
     initBlocks();
 
     document.getElementById('saveFile').onclick = saveFile;
+    document.getElementById('show').onclick = onShowClick;
+
+    // document.getElementById('loadFile').onclick = onLoadFileClick;
+
+    document.getElementById('selectFiles').onchange = onFileChange;
 
 
 };
