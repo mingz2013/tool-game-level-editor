@@ -1,5 +1,5 @@
 let onImgClick = (event) => {
-    console.log(event);
+    // console.log(event);
 
     let target = event.target;
 
