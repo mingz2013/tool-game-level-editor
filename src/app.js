@@ -41,6 +41,8 @@ let initBoard = () => {
             let num = col * 10 + row;
             let i = document.getElementById(num);
             i.onclick = onImgClick;
+            i.width = 35;
+            i.height = 35;
         }
     }
 
@@ -84,11 +86,33 @@ let saveFile = () => {
 };
 
 
+let initBlocks = () => {
+
+    let blocks = document.getElementById("blocks");
+    let blocksStr = "";
+    for (let i = 0; i < 13; i++) {
+        blocksStr += "<img src='img/" + i + ".png' title='" + i + "' id='block-" + i + "' />";
+
+    }
+
+    blocks.innerHTML = blocksStr;
+
+
+    for (let i = 0; i < 13; i++) {
+        let img = document.getElementById("block-" + i);
+        img.width = 20;
+        img.height = 20;
+    }
+};
+
+
 window.onload = () => {
 
 
     initBoard();
 
+
+    initBlocks();
 
     document.getElementById('saveFile').onclick = saveFile;
 
